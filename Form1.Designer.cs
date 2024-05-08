@@ -45,6 +45,7 @@
             folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             backgroundWorker = new System.ComponentModel.BackgroundWorker();
             buttonReset = new System.Windows.Forms.Button();
+            checkBoxTestMode = new System.Windows.Forms.CheckBox();
             SuspendLayout();
             // 
             // treeView1
@@ -203,11 +204,22 @@
             buttonReset.UseVisualStyleBackColor = true;
             buttonReset.Click += buttonReset_Click;
             // 
+            // checkBoxTestMode
+            // 
+            checkBoxTestMode.AutoSize = true;
+            checkBoxTestMode.Location = new System.Drawing.Point(762, 94);
+            checkBoxTestMode.Name = "checkBoxTestMode";
+            checkBoxTestMode.Size = new System.Drawing.Size(159, 24);
+            checkBoxTestMode.TabIndex = 6;
+            checkBoxTestMode.Text = "Медленный поиск";
+            checkBoxTestMode.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(929, 532);
+            Controls.Add(checkBoxTestMode);
             Controls.Add(buttonReset);
             Controls.Add(labelCurrentFolder);
             Controls.Add(label5);
@@ -251,6 +263,7 @@
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
         private System.ComponentModel.BackgroundWorker backgroundWorker;
         private System.Windows.Forms.Button buttonReset;
+        private System.Windows.Forms.CheckBox checkBoxTestMode;
     }
 }
 

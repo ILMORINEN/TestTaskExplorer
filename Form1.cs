@@ -33,9 +33,15 @@ namespace TestTaskExplorer
         public Form1()
         {
             InitializeComponent();
+
             buttonPauseContinue.Text = _pauseText;
-            textBoxRegex.DataBindings.Add(nameof(textBoxRegex.Text), Settings.Default, nameof(Settings.Default.Regex));
-            textBoxPath.DataBindings.Add(nameof(textBoxPath.Text), Settings.Default, nameof(Settings.Default.SearchPath));
+
+            textBoxRegex.DataBindings.Add(nameof(textBoxRegex.Text),
+                                          Settings.Default,
+                                          nameof(Settings.Default.Regex));
+            textBoxPath.DataBindings.Add(nameof(textBoxPath.Text),
+                                         Settings.Default,
+                                         nameof(Settings.Default.SearchPath));
         }
 
         private void buttonSelectFolder_Click(object sender, EventArgs e)
@@ -60,10 +66,9 @@ namespace TestTaskExplorer
 
             var totalTask = Task.Run(() =>
             {
-                var total = Directory
-                            .GetFiles(textBoxPath.Text, "*.*", _inaccessibleAndSubdirectories)
-                            .Length
-                            .ToString();
+                var total = Directory.GetFiles(textBoxPath.Text, "*.*", _inaccessibleAndSubdirectories)
+                                     .Length
+                                     .ToString();
                 labelTotalFiles.Invoke(() => labelTotalFiles.Text = total);
             });
 
@@ -72,10 +77,12 @@ namespace TestTaskExplorer
 
             await totalTask;
         }
+
         private void backgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             Recursion(textBoxPath.Text, (BackgroundWorker)sender, e, null);
         }
+
         private void Recursion(string searchPath, BackgroundWorker bw, DoWorkEventArgs e, TreeNode? parent)
         {
             _busy.WaitOne(Timeout.Infinite);
@@ -118,7 +125,8 @@ namespace TestTaskExplorer
         }
         private IEnumerable<string> SearchFolders(string path)
         {
-            Thread.Sleep(1000);
+            if (checkBoxTestMode.Checked)
+                Thread.Sleep(1000);
             return Directory.EnumerateDirectories(path, "*", _inaccessible);
         }
         private IEnumerable<string?> SearchFiles(string path, string pattern)
@@ -134,7 +142,9 @@ namespace TestTaskExplorer
             if (e.UserState is (TreeNode, TreeNode) || (e.UserState is (null, TreeNode)))
             {
                 treeView1.BeginUpdate();
+
                 var nodePair = ((TreeNode, TreeNode))e.UserState;
+
                 if (nodePair.Item1 is null)
                 {
                     treeView1.Nodes.Add(nodePair.Item2);
@@ -143,8 +153,10 @@ namespace TestTaskExplorer
                 {
                     nodePair.Item1.Nodes.Add(nodePair.Item2);
                 }
+
                 labelCurrentFolder.Text = nodePair.Item2.Text;
                 labelFoundFiles.Text = _foundCount.ToString();
+
                 treeView1.ExpandAll();
                 treeView1.EndUpdate();
             }
@@ -190,6 +202,11 @@ namespace TestTaskExplorer
             }
             else if (e.Error != null)
             {
+                var errorText = "Поиск завершился неудачно.\n"
+                                + "Дополнительная информация:\n"
+                                + $"{e.Error.Message}\n{e.Error.StackTrace}";
+                MessageBox.Show(errorText, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
                 labelTotalFiles.Text = "0";
                 labelFoundFiles.Text = "0";
 
@@ -202,7 +219,6 @@ namespace TestTaskExplorer
             buttonSearch.Enabled = true;
             buttonPauseContinue.Enabled = false;
             buttonReset.Enabled = false;
-
         }
     }
 }
